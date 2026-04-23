@@ -1,237 +1,245 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Voyago - Travel Planner</title>
-<style>
-body{
-font-family: Arial, sans-serif;
-margin:0;
-background:#f5f7f6;
-color:#333;
-}
-header{
-background:linear-gradient(135deg,#1fab89,#f7d046);
-color:white;
-padding:20px;
-text-align:center;
-font-size:24px;
-font-weight:bold;
-}
-.container{
-padding:20px;
-max-width:1100px;
-margin:auto;
-}
-.card{
-background:white;
-border-radius:14px;
-padding:18px;
-margin-bottom:20px;
-box-shadow:0 6px 18px rgba(0,0,0,0.07);
-animation:fade .4s ease;
-}
-@keyframes fade{
-from{opacity:0;transform:translateY(8px)}
-to{opacity:1}
-}
-button{
-background:#1fab89;
-color:white;
-border:none;
-padding:10px 14px;
-border-radius:8px;
-cursor:pointer;
-margin-top:8px;
-}
-button.secondary{
-background:#f7d046;
-color:#333;
-}
-input,select{
-width:100%;
-padding:8px;
-margin-top:6px;
-border-radius:6px;
-border:1px solid #ddd;
-}
-.timeline{
-display:grid;
-grid-template-columns:1fr 1fr 1fr;
-gap:10px;
-}
-.timeline div{
-background:#f0faf7;
-padding:10px;
-border-radius:10px;
-min-height:120px;
-}
-.activity{
-background:white;
-padding:6px;
-border-radius:6px;
-margin-bottom:6px;
-font-size:13px;
-}
-.badge{
-font-size:11px;
-background:#1fab89;
-color:white;
-padding:2px 6px;
-border-radius:6px;
-margin-left:5px;
-}
-.history-item{
-border-bottom:1px solid #eee;
-padding:6px 0;
-}
-@media(max-width:700px){
-.timeline{grid-template-columns:1fr}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#2D6A4F" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192x192-A.png" type="image/png" />
+  <title>VOYAGO - Smart Travel Pack</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #2D6A4F;
+      --secondary: #FFD60A;
+      --bg: #F8F9F3;
+      --white: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); margin: 0; padding-bottom: 70px; }
+
+    /* Screen Management */
+    .screen { display: none; animation: fadeIn 0.4s ease; }
+    .active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Header & Hero */
+    .hero { width: 100%; height: 200px; background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; border-radius: 0 0 40px 40px; text-align: center; }
+
+    /* UI Components */
+    .card { background: var(--white); margin: -30px 20px 20px; padding: 20px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    .input-group { margin-bottom: 15px; }
+    label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); margin: 0 0 5px 5px; }
+    input, textarea { width: 100%; padding: 14px; border-radius: 15px; border: 2px solid #E9EDC9; background: #FEFAE0; font-family: inherit; outline: none; }
+    
+    .btn { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 15px; font-weight: 800; width: 100%; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+    .btn-fav { background: var(--secondary); color: var(--primary); margin-top: 10px; }
+
+    .item-card { display: flex; align-items: center; gap: 15px; background: white; padding: 12px; border-radius: 20px; margin-bottom: 10px; border: 1px solid #f0f0f0; }
+    .item-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; }
+    .item-check { width: 20px; height: 20px; accent-color: var(--primary); }
+
+    /* Navigation */
+    .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+    .nav-item { color: #A0AEC0; font-size: 1.2rem; cursor: pointer; }
+    .nav-item.active-nav { color: var(--primary); }
+
+    #notif { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--secondary); color: var(--primary); padding: 12px 25px; border-radius: 50px; font-weight: 800; z-index: 1000; display: none; }
+  </style>
 </head>
+
 <body>
-<header>Voyago 🌍</header>
-<div class="container">
 
-<div class="card">
-<h3>Smart Packing List</h3>
-<input id="dest" placeholder="Destinasi">
-<input id="duration" placeholder="Durasi (hari)" type="number">
-<select id="tripType">
-<option value="liburan">Liburan</option>
-<option value="bisnis">Bisnis</option>
-<option value="petualangan">Petualangan</option>
-</select>
-<button onclick="generatePacking()">Generate</button>
-<div id="packingList"></div>
-</div>
+  <div id="notif">For Your Trip Ready to Go</div>
 
-<div class="card">
-<h3>Itinerary Timeline</h3>
-<input id="time" placeholder="Waktu (contoh 08:00)">
-<input id="place" placeholder="Tempat">
-<select id="period">
-<option>Morning</option>
-<option>Afternoon</option>
-<option>Evening</option>
-</select>
-<button onclick="addActivity()">Tambah Aktivitas</button>
-<div class="timeline">
-<div><b>Morning</b><div id="morning"></div></div>
-<div><b>Afternoon</b><div id="afternoon"></div></div>
-<div><b>Evening</b><div id="evening"></div></div>
-</div>
-</div>
+  <div id="screen-home" class="screen active">
+    <div class="hero">
+      <div>
+        <h1 style="margin:0;">VOYAGO</h1>
+        <p style="opacity:0.9;">Atur Barang Bawaanmu</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="input-group">
+        <label>DESTINASI</label>
+        <input type="text" id="dest" placeholder="Ke mana kita pergi?">
+      </div>
+      <div style="display: flex; gap: 10px;" class="input-group">
+        <div style="flex:1;"><label>HARI</label><input type="number" id="hari" placeholder="0"></div>
+        <div style="flex:1;"><label>MALAM</label><input type="number" id="malam" placeholder="0"></div>
+      </div>
+      <div class="input-group">
+        <label>ITINERARY (Tulis per baris)</label>
+        <textarea id="itin-input" rows="3" placeholder="Contoh: Dinner di tepi pantai"></textarea>
+      </div>
+      <button class="btn" onclick="processTrip()">Lihat Checklist</button>
+    </div>
+  </div>
 
-<div class="card">
-<h3>Smart Reminder</h3>
-<div id="reminderLog">Reminder aktif...</div>
-</div>
+  <div id="screen-result" class="screen">
+    <div style="background: var(--primary); color: white; padding: 40px 20px; border-radius: 0 0 35px 35px;">
+      <h2 id="res-title" style="margin:0;"></h2>
+      <p id="res-meta" style="margin:5px 0 0; opacity:0.8;"></p>
+    </div>
+    
+    <div style="padding: 20px;">
+      <h3 style="color: var(--primary);">Smart Packing List</h3>
+      <div id="packing-container"></div>
+    </div>
 
-<div class="card">
-<h3>Share Trip</h3>
-<button onclick="shareTrip()">Copy Summary</button>
-<textarea id="shareText" rows="4"></textarea>
-</div>
+    <div class="card" style="margin-top:0;">
+      <h3 style="color: var(--primary);">Itinerary Checklist</h3>
+      <div id="itin-container"></div>
+    </div>
 
-<div class="card">
-<h3>Trip History</h3>
-<button class="secondary" onclick="saveTrip()">Simpan Trip</button>
-<div id="history"></div>
-</div>
+    <div style="padding: 0 20px 20px;" id="action-area">
+      <button class="btn" onclick="saveHistory()">Simpan ke Riwayat</button>
+      <button class="btn btn-fav" onclick="saveFavorite()">Tambah ke Favorit</button>
+    </div>
+  </div>
 
-</div>
+  <div id="screen-fav" class="screen">
+    <div style="padding: 40px 20px; text-align: center; color: var(--primary);"><h2>Favorit Saya</h2></div>
+    <div id="fav-list" style="padding: 0 20px;"></div>
+  </div>
 
-<script>
-let activities=JSON.parse(localStorage.getItem("voyago_activities")||"[]")
-let packing=JSON.parse(localStorage.getItem("voyago_packing")||"[]")
-let historyTrips=JSON.parse(localStorage.getItem("voyago_history")||"[]")
+  <div id="screen-history" class="screen">
+    <div style="padding: 40px 20px; text-align: center; color: var(--primary);"><h2>Riwayat Perjalanan</h2></div>
+    <div id="hist-list" style="padding: 0 20px;"></div>
+  </div>
 
-function generatePacking(){
-let base=["Passport","Charger","Phone","Clothes","Toothbrush"]
-let type=document.getElementById("tripType").value
-if(type=="bisnis") base.push("Laptop","Formal Shoes")
-if(type=="petualangan") base.push("Hiking Shoes","Jacket")
-packing=base
-saveLS()
-renderPacking()
-}
+  <nav class="nav-bar">
+    <div class="nav-item active-nav" onclick="navTo('screen-home', this)"><i class="fa-solid fa-house"></i></div>
+    <div class="nav-item" onclick="navTo('screen-fav', this)"><i class="fa-solid fa-heart"></i></div>
+    <div class="nav-item" onclick="loadHistory(this)"><i class="fa-solid fa-history"></i></div>
+  </nav>
 
-function renderPacking(){
-let html=""
-packing.forEach((item,i)=>{
-html+=`<label><input type=checkbox> ${item}</label><br>`
-})
-document.getElementById("packingList").innerHTML=html
-}
+  <script>
+    let currentData = null;
 
-function addActivity(){
-let a={
-time:time.value,
-place:place.value,
-period:period.value
-}
-activities.push(a)
-saveLS()
-renderActivities()
-}
+    function showNotif(msg) {
+      const n = document.getElementById('notif');
+      n.innerText = msg;
+      n.style.display = 'block';
+      setTimeout(() => n.style.display = 'none', 3000);
+    }
 
-function renderActivities(){
-["morning","afternoon","evening"].forEach(p=>document.getElementById(p).innerHTML="")
-activities.forEach((a,i)=>{
-let el=document.createElement("div")
-el.className="activity"
-el.innerHTML=`${a.time} - ${a.place} <span class=badge>${a.period}</span> <button onclick="delAct(${i})">x</button>`
-document.getElementById(a.period.toLowerCase()).appendChild(el)
-})
-}
+    function navTo(id, el) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+      document.getElementById(id).classList.add('active');
+      if(el) el.classList.add('active-nav');
+    }
 
-function delAct(i){activities.splice(i,1);saveLS();renderActivities()}
+    function processTrip() {
+      const dest = document.getElementById('dest').value;
+      const hari = parseInt(document.getElementById('hari').value) || 0;
+      const malam = parseInt(document.getElementById('malam').value) || 0;
+      const itinVal = document.getElementById('itin-input').value;
 
-function reminderLoop(){
-let now=new Date()
-let t=now.getHours()+":"+String(now.getMinutes()).padStart(2,'0')
-activities.forEach(a=>{
-if(a.time==t){
-document.getElementById("reminderLog").innerHTML="Reminder: "+a.place
-}
-})
-}
-setInterval(reminderLoop,60000)
+      if(!dest || hari === 0) return alert("Lengkapi data perjalananmu!");
 
-function saveTrip(){
-let trip={date:new Date().toLocaleString(),activities,packing}
-historyTrips.push(trip)
-saveLS()
-renderHistory()
-}
+      const bajuCount = hari * 2;
+      const packing = [
+        { name: "Pakaian Utama", desc: "Kaos, celana, pakaian luar", qty: bajuCount + " Pasang", img: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=200" },
+        { name: "Alat Mandi", desc: "Sabun, sikat gigi, pasta gigi, shampo, facial wash", qty: "1 Set", img: "https://images.unsplash.com/photo-1559594882-44288c54f932?w=200" },
+        { name: "Pakaian Tidur", desc: "Baju tidur nyaman", qty: malam + " Pasang", img: "https://images.unsplash.com/photo-1563720223185-11003d516935?w=200" }
+      ];
 
-function renderHistory(){
-let html=""
-historyTrips.forEach(t=>{
-html+=`<div class=history-item>${t.date} (${t.activities.length} activities)</div>`
-})
-document.getElementById("history").innerHTML=html
-}
+      const itin = itinVal.split('\n').filter(l => l.trim() !== "");
 
-function shareTrip(){
-let text="Voyago Trip:\n"
-activities.forEach(a=>text+=a.time+" - "+a.place+"\n")
-document.getElementById("shareText").value=text
-navigator.clipboard.writeText(text)
-}
+      currentData = {
+        dest, hari, malam, packing, itin,
+        date: new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit', year:'numeric'}).replace(/\//g, '-')
+      };
 
-function saveLS(){
-localStorage.setItem("voyago_activities",JSON.stringify(activities))
-localStorage.setItem("voyago_packing",JSON.stringify(packing))
-localStorage.setItem("voyago_history",JSON.stringify(historyTrips))
-}
+      displayResult(currentData, true);
+    }
 
-renderPacking()
-renderActivities()
-renderHistory()
-</script>
+    function displayResult(data, isNew) {
+      document.getElementById('res-title').innerText = data.dest;
+      document.getElementById('res-meta').innerText = `${data.hari} Hari ${data.malam} Malam | ${data.date}`;
+      
+      const pCon = document.getElementById('packing-container');
+      pCon.innerHTML = data.packing.map(item => `
+        <div class="item-card">
+          <input type="checkbox" class="item-check">
+          <img src="${item.img}" class="item-img">
+          <div>
+            <div style="font-weight:800; font-size:0.9rem;">${item.name} (${item.qty})</div>
+            <div style="font-size:0.75rem; color:#666;">${item.desc}</div>
+          </div>
+        </div>
+      `).join('');
+
+      const iCon = document.getElementById('itin-container');
+      iCon.innerHTML = data.itin.map(l => `
+        <div style="display:flex; gap:10px; margin-bottom:10px;"><input type="checkbox"> <span>${l}</span></div>
+      `).join('') || "Belum ada itinerary.";
+
+      document.getElementById('action-area').style.display = isNew ? 'block' : 'none';
+      navTo('screen-result');
+    }
+
+    function saveHistory() {
+      const hist = JSON.parse(localStorage.getItem('voyago_hist') || '[]');
+      hist.unshift(currentData);
+      localStorage.setItem('voyago_hist', JSON.stringify(hist));
+      showNotif("For Your Trip Ready to Go");
+      alert("Berhasil disimpan ke riwayat!");
+    }
+
+    function saveFavorite() {
+      const favs = JSON.parse(localStorage.getItem('voyago_favs') || '[]');
+      favs.unshift(currentData);
+      localStorage.setItem('voyago_favs', JSON.stringify(favs));
+      renderFavs();
+      alert("Berhasil disimpan ke favorit!");
+    }
+
+    function renderFavs() {
+      const favs = JSON.parse(localStorage.getItem('voyago_favs') || '[]');
+      const con = document.getElementById('fav-list');
+      con.innerHTML = favs.map((f, i) => `
+        <div class="card" style="margin:0 0 10px 0; cursor:pointer;" onclick="viewDetail('voyago_favs', ${i})">
+          <strong>${f.dest}</strong><br><small>${f.hari} Hari ${f.malam} Malam</small>
+        </div>
+      `).join('') || "Belum ada favorit."
+    }
+
+    function loadHistory(el) {
+      const hist = JSON.parse(localStorage.getItem('voyago_hist') || '[]');
+      const con = document.getElementById('hist-list');
+      con.innerHTML = hist.map((h, i) => `
+        <div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; border-left:5px solid var(--secondary); display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="viewDetail('voyago_hist', ${i})">
+          <div><strong>${h.dest}</strong><br><small>${h.hari} Hari</small></div>
+          <small>${h.date}</small>
+        </div>
+      `).join('') || "Belum ada riwayat.";
+      navTo('screen-history', el);
+    }
+
+    function viewDetail(key, index) {
+      const list = JSON.parse(localStorage.getItem(key));
+      displayResult(list[index], false);
+    }
+
+    // Service Worker Register (Dari Template)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(() => console.log('SW registered!'))
+        .catch(err => console.error('SW gagal:', err));
+    }
+
+    renderFavs();
+  </script>
 </body>
 </html>
